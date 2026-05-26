@@ -24,8 +24,12 @@ class Queue extends Model
     public static function generateQueueNumber(): string
     {
         $prefix = 'A';
-        $latest = self::whereDate('created_at', today())->count();
-        return $prefix . str_pad($latest + 1, 3, '0', STR_PAD_LEFT);
+        $latest = self::whereDate('created_at', today())
+            ->orderByDesc('queue_number')
+            ->value('queue_number');
+
+        $next = $latest ? (int) substr($latest, 1) + 1 : 1;
+        return $prefix . str_pad($next, 3, '0', STR_PAD_LEFT);
     }
 
     public static function getActiveQueue()
