@@ -6,13 +6,15 @@ use App\Models\Queue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
-use Illuminate\Queue\SerializesModels;
 
 class QueueNotification extends Mailable
 {
-    use SerializesModels;
+    private Queue $queueModel;
 
-    public function __construct(public Queue $queue) {}
+    public function __construct(Queue $queue)
+    {
+        $this->queueModel = $queue;
+    }
 
     public function envelope(): Envelope
     {
@@ -25,6 +27,7 @@ class QueueNotification extends Mailable
     {
         return new Content(
             view: 'emails.queue-notification',
+            with: ['queue' => $this->queueModel],
         );
     }
 

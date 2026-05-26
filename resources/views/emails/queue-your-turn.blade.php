@@ -26,8 +26,8 @@
         <div class="body">
             <p style="color:#555; font-size:16px;">Halo <strong>{{ $queue->owner_name }}</strong>,</p>
             <p style="color:#666; font-size:14px; line-height:1.7;">
-                Sekarang sudah saatnya antrian Anda.<br>
-                Kami menunggu Anda di toko dengan rasa hormat. 🙏
+                Anda adalah antrian pertama kami hari ini.<br>
+                Admin kami sudah menunggu Anda di toko. 🙏
             </p>
 
             <div class="queue-number">
@@ -39,9 +39,9 @@
 
             <div class="alert-warning">
                 <p>
-                    ⚠️ <strong>Perhatian:</strong> Jika Anda tidak hadir di toko dalam waktu
-                    <strong>2 jam</strong> sejak email ini dikirim, antrian Anda akan
-                    <strong>hangus secara otomatis</strong> dan Anda perlu mendaftar antri kembali.
+                    ⚠️ <strong>Perhatian:</strong> Jika dalam <strong>2 jam</strong> Anda tidak hadir di toko,
+                    dengan hormat antrian Anda akan kami hapus. Silakan membuat antrian lagi —
+                    kami tetap menunggu Anda. 🙏
                 </p>
             </div>
 

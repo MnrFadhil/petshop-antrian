@@ -12,7 +12,10 @@ use Livewire\Component;
 class AdminDashboard extends Component
 {
     public bool $confirmSelesai = false;
-    public bool $confirmSkip = false;
+    public bool $confirmSkip    = false;
+    public string $tab           = 'live';
+    public string $filterService = 'all';
+    public string $filterStatus  = 'all';
 
     public function selesai(): void
     {
@@ -20,8 +23,7 @@ class AdminDashboard extends Component
         if (!$serving) return;
 
         $serving->update(['status' => 'done']);
-
-        $this->advanceQueue();
+        $this->notifyNextInLine();
         $this->confirmSelesai = false;
     }
 
@@ -38,7 +40,7 @@ class AdminDashboard extends Component
             // Silent fail
         }
 
-        $this->advanceQueue();
+        $this->notifyNextInLine();
         $this->confirmSkip = false;
     }
 
@@ -47,20 +49,11 @@ class AdminDashboard extends Component
         if (Queue::getActiveQueue()) return;
 
         $next = Queue::getNextWaiting();
-        if ($next) {
-            $next->update(['status' => 'serving', 'serving_at' => now()]);
-            $this->sendYourTurnEmail($next);
-        }
-    }
-
-    private function advanceQueue(): void
-    {
-        $next = Queue::getNextWaiting();
         if (!$next) return;
 
         $next->update(['status' => 'serving', 'serving_at' => now()]);
-        $this->sendYourTurnEmail($next);
 
+        // Kirim QueueNotification ke #2 (QueueYourTurn sudah dikirim saat mereka jadi #1)
         $secondInLine = Queue::where('status', 'waiting')
             ->orderBy('created_at')
             ->first();
@@ -72,6 +65,21 @@ class AdminDashboard extends Component
                 // Silent fail
             }
         }
+    }
+
+    private function notifyNextInLine(): void
+    {
+        $next = Queue::getNextWaiting();
+        if (!$next) return;
+
+        // Pelanggan ini naik jadi #1, kirim QueueYourTurn
+        $this->sendYourTurnEmail($next);
+    }
+
+    public function logout(): void
+    {
+        session()->forget('admin_auth');
+        $this->redirect('/admin/login');
     }
 
     private function sendYourTurnEmail(Queue $queue): void
@@ -92,9 +100,17 @@ class AdminDashboard extends Component
 
     public function render()
     {
+        $historyQueues = Queue::query()
+            ->when($this->filterService !== 'all', fn ($q) => $q->where('service', $this->filterService))
+            ->when($this->filterStatus  !== 'all', fn ($q) => $q->where('status',  $this->filterStatus))
+            ->orderByDesc('created_at')
+            ->get();
+
         return view('livewire.admin-dashboard', [
             'serving'       => Queue::getActiveQueue(),
             'waitingList'   => Queue::getWaitingQueue(),
+            'historyQueues' => $historyQueues,
+            'totalQueues'   => Queue::count(),
         ]);
     }
 }

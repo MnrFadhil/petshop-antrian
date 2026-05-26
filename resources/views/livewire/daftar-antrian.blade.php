@@ -1,102 +1,114 @@
 <div>
     @if($submitted)
-        <!-- Sukses -->
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 text-center">
+        {{-- ===== SUCCESS STATE ===== --}}
+        <div style="background:#fff;border:2px solid #FFD6E4;border-radius:28px;padding:48px 36px;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,0.08);">
+            <div class="success-pop" style="font-size:64px;margin-bottom:16px;display:inline-block;">🎉</div>
+            <h2 style="font-weight:900;font-size:24px;color:#2D1B33;margin:0 0 8px;">Pendaftaran Berhasil!</h2>
+            <p style="font-size:14px;color:#7B5E78;margin-bottom:28px;line-height:1.6;">Kami akan kirim notifikasi email saat giliranmu hampir tiba.</p>
+
+            <div style="background:linear-gradient(135deg,#FFF0F5,#F0EEFF);border:2.5px solid #FFD6E4;border-radius:22px;padding:24px 32px;margin-bottom:28px;">
+                <div style="font-size:11px;color:#B8A0B5;font-weight:800;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">Nomor Antrianmu</div>
+                <div style="font-size:54px;font-weight:900;color:#FF6B9D;line-height:1.1;">{{ $queue_number }}</div>
+                <div style="font-size:12px;color:#B8A0B5;margin-top:6px;">Detail dikirim ke email kamu 📧</div>
+            </div>
+
             @if($is_empty_queue)
-                <div class="text-5xl mb-4">🎉</div>
-                <h2 class="text-2xl font-bold text-green-700 mb-2">Tidak Ada Antrian!</h2>
-                <p class="text-gray-600 mb-4">Saat ini antrian sedang kosong. Kamu bisa langsung datang ke lokasi untuk dilayani segera.</p>
-                <div class="bg-green-50 border border-green-200 rounded-xl p-4 mb-6">
-                    <p class="text-sm text-green-700">Nomor antrianmu: <strong class="text-lg">{{ $queue_number }}</strong></p>
-                    <p class="text-xs text-green-600 mt-1">Email konfirmasi sudah dikirim ke email kamu.</p>
-                </div>
-            @else
-                <div class="text-5xl mb-4">✅</div>
-                <h2 class="text-2xl font-bold text-primary mb-2">Pendaftaran Berhasil!</h2>
-                <p class="text-gray-600 mb-4">Nomor antrianmu sudah terdaftar. Kami akan mengirim email saat giliranmu hampir tiba.</p>
-                <div class="bg-primary/10 border border-primary/30 rounded-xl p-5 mb-6">
-                    <p class="text-sm text-gray-600">Nomor Antrian Kamu</p>
-                    <p class="text-4xl font-bold text-primary my-2">{{ $queue_number }}</p>
-                    <p class="text-xs text-gray-500">Detail sudah dikirim ke email kamu.</p>
+                <div style="background:#E8FAF6;border:2px solid #B5EAD7;border-radius:14px;padding:14px 16px;margin-bottom:20px;font-size:13px;color:#166534;font-weight:700;">
+                    🚀 Antrian sedang kosong! Kamu bisa langsung datang ke toko sekarang.
                 </div>
             @endif
-            <div class="flex flex-col sm:flex-row gap-3 justify-center">
-                <a href="/cek" class="bg-primary text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-secondary transition">
-                    Cek Posisi Antrian
-                </a>
-                <a href="/" class="bg-gray-100 text-gray-700 px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-200 transition">
-                    Kembali ke Beranda
-                </a>
+
+            <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+                <a href="/cek" style="background:linear-gradient(135deg,#FF6B9D,#9B8FD4);color:#fff;border-radius:20px;padding:11px 22px;font-size:14px;font-weight:700;text-decoration:none;display:inline-block;">Cek Posisi Antrian →</a>
+                <a href="/" style="background:transparent;border:2px solid #FFD6E4;color:#7B5E78;border-radius:20px;padding:9px 22px;font-size:14px;font-weight:700;text-decoration:none;display:inline-block;">Kembali ke Beranda</a>
             </div>
         </div>
+
     @else
-        <!-- Form -->
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-            <form wire:submit="submit" class="space-y-5">
+        {{-- ===== FORM STATE ===== --}}
+        <div style="background:#fff;border:2px solid #FFD6E4;border-radius:24px;padding:28px;box-shadow:0 4px 24px rgba(0,0,0,0.06);">
+            <form wire:submit.prevent="submit">
 
-                <!-- Nama Pemilik -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Nama Pemilik <span class="text-red-500">*</span></label>
-                    <input type="text" wire:model="owner_name" placeholder="Contoh: Budi Santoso"
-                        class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition @error('owner_name') border-red-400 @enderror">
-                    @error('owner_name') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                {{-- Nama Pemilik --}}
+                <div style="margin-bottom:16px;">
+                    <label style="display:block;font-size:13px;font-weight:800;color:#2D1B33;margin-bottom:6px;">
+                        Nama Pemilik <span style="color:#FF6B9D;">*</span>
+                    </label>
+                    <input type="text" wire:model="owner_name" placeholder="Contoh: Siti Aminah"
+                        style="width:100%;padding:12px 16px;border:2px solid {{ $errors->has('owner_name') ? '#FF6B9D' : '#FFD6E4' }};border-radius:14px;font-size:14px;color:#2D1B33;font-family:'Nunito',sans-serif;outline:none;transition:all 0.2s;background:#fff;">
+                    @error('owner_name')
+                        <p style="color:#FF6B9D;font-size:11px;margin-top:4px;font-weight:700;">{{ $message }}</p>
+                    @enderror
                 </div>
 
-                <!-- Email -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Email <span class="text-red-500">*</span></label>
+                {{-- Email --}}
+                <div style="margin-bottom:16px;">
+                    <label style="display:block;font-size:13px;font-weight:800;color:#2D1B33;margin-bottom:6px;">
+                        Email <span style="color:#FF6B9D;">*</span>
+                    </label>
                     <input type="email" wire:model="email" placeholder="email@kamu.com"
-                        class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition @error('email') border-red-400 @enderror">
-                    @error('email') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                        style="width:100%;padding:12px 16px;border:2px solid {{ $errors->has('email') ? '#FF6B9D' : '#FFD6E4' }};border-radius:14px;font-size:14px;color:#2D1B33;font-family:'Nunito',sans-serif;outline:none;transition:all 0.2s;background:#fff;">
+                    @error('email')
+                        <p style="color:#FF6B9D;font-size:11px;margin-top:4px;font-weight:700;">{{ $message }}</p>
+                    @enderror
                 </div>
 
-                <!-- Jenis Hewan -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Jenis Hewan <span class="text-red-500">*</span></label>
+                {{-- Jenis Hewan --}}
+                <div style="margin-bottom:16px;">
+                    <label style="display:block;font-size:13px;font-weight:800;color:#2D1B33;margin-bottom:6px;">
+                        Jenis Hewan <span style="color:#FF6B9D;">*</span>
+                    </label>
                     <input type="text" wire:model="pet_type" placeholder="Contoh: Kucing, Anjing, Kelinci..."
-                        class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition @error('pet_type') border-red-400 @enderror">
-                    @error('pet_type') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                        style="width:100%;padding:12px 16px;border:2px solid {{ $errors->has('pet_type') ? '#FF6B9D' : '#FFD6E4' }};border-radius:14px;font-size:14px;color:#2D1B33;font-family:'Nunito',sans-serif;outline:none;transition:all 0.2s;background:#fff;">
+                    @error('pet_type')
+                        <p style="color:#FF6B9D;font-size:11px;margin-top:4px;font-weight:700;">{{ $message }}</p>
+                    @enderror
                 </div>
 
-                <!-- Pilih Layanan -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Pilih Layanan <span class="text-red-500">*</span></label>
-                    <div class="grid grid-cols-2 gap-3">
-                        <label class="cursor-pointer">
+                {{-- Pilih Layanan --}}
+                <div style="margin-bottom:16px;">
+                    <label style="display:block;font-size:13px;font-weight:800;color:#2D1B33;margin-bottom:10px;">
+                        Pilih Layanan <span style="color:#FF6B9D;">*</span>
+                    </label>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                        <label style="cursor:pointer;">
                             <input type="radio" wire:model.live="service" value="grooming" class="sr-only">
-                            <div class="border-2 rounded-xl p-4 text-center transition {{ $service === 'grooming' ? 'border-primary bg-primary/5' : 'border-gray-200 hover:border-gray-300' }}">
-                                <div class="text-2xl mb-1">✂️</div>
-                                <div class="text-sm font-medium text-gray-700">Grooming</div>
+                            <div style="background:{{ $service === 'grooming' ? '#FFF0F5' : '#fff' }};border:2.5px solid {{ $service === 'grooming' ? '#FF6B9D' : '#FFD6E4' }};border-radius:16px;padding:16px 12px;text-align:center;cursor:pointer;transition:all 0.2s;">
+                                <div style="font-size:28px;margin-bottom:6px;">✂️</div>
+                                <div style="font-size:12px;font-weight:800;color:{{ $service === 'grooming' ? '#FF6B9D' : '#2D1B33' }};">Grooming</div>
                             </div>
                         </label>
-                        <label class="cursor-pointer">
+                        <label style="cursor:pointer;">
                             <input type="radio" wire:model.live="service" value="vet" class="sr-only">
-                            <div class="border-2 rounded-xl p-4 text-center transition {{ $service === 'vet' ? 'border-primary bg-primary/5' : 'border-gray-200 hover:border-gray-300' }}">
-                                <div class="text-2xl mb-1">🩺</div>
-                                <div class="text-sm font-medium text-gray-700">Pemeriksaan Dokter</div>
+                            <div style="background:{{ $service === 'vet' ? '#FFF0F5' : '#fff' }};border:2.5px solid {{ $service === 'vet' ? '#FF6B9D' : '#FFD6E4' }};border-radius:16px;padding:16px 12px;text-align:center;cursor:pointer;transition:all 0.2s;">
+                                <div style="font-size:28px;margin-bottom:6px;">🩺</div>
+                                <div style="font-size:12px;font-weight:800;color:{{ $service === 'vet' ? '#FF6B9D' : '#2D1B33' }};">Pemeriksaan Dokter</div>
                             </div>
                         </label>
                     </div>
-                    @error('service') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                    @error('service')
+                        <p style="color:#FF6B9D;font-size:11px;margin-top:6px;font-weight:700;">{{ $message }}</p>
+                    @enderror
                 </div>
 
-                <!-- Keluhan / Catatan -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Keluhan / Catatan <span class="text-gray-400 font-normal">(opsional)</span></label>
-                    <textarea wire:model="notes" rows="3" placeholder="Ceritakan keluhan atau kondisi hewan kamu..."
-                        class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition resize-none @error('notes') border-red-400 @enderror"></textarea>
-                    @error('notes') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                {{-- Catatan --}}
+                <div style="margin-bottom:24px;">
+                    <label style="display:block;font-size:13px;font-weight:800;color:#2D1B33;margin-bottom:6px;">
+                        Catatan / Keluhan <span style="font-size:11px;color:#B8A0B5;font-weight:600;">(opsional)</span>
+                    </label>
+                    <textarea wire:model="notes" rows="3" placeholder="Ceritakan kondisi atau keluhan hewan kamu..."
+                        style="width:100%;padding:12px 16px;border:2px solid #FFD6E4;border-radius:14px;font-size:14px;color:#2D1B33;font-family:'Nunito',sans-serif;outline:none;transition:all 0.2s;background:#fff;resize:none;line-height:1.5;"></textarea>
                 </div>
 
-                <button type="submit" wire:loading.attr="disabled" wire:loading.class="opacity-70"
-                    class="w-full bg-primary text-white py-3 rounded-lg font-medium hover:bg-secondary transition flex items-center justify-center gap-2">
-                    <span wire:loading.remove>Daftar Antrian</span>
-                    <span wire:loading>
-                        <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
-                        </svg>
-                        Memproses...
+                {{-- Submit --}}
+                <button type="submit"
+                    wire:loading.attr="disabled"
+                    style="width:100%;background:linear-gradient(135deg,#FF6B9D,#9B8FD4);color:#fff;border:none;border-radius:16px;padding:14px;font-size:15px;font-weight:700;font-family:'Nunito',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:all 0.2s;">
+                    <span wire:loading.remove wire:target="submit">🐾 Daftar Antrian</span>
+                    <span wire:loading wire:target="submit">
+                        <span class="dot1" style="font-size:18px;color:#fff;">●</span>
+                        <span class="dot2" style="font-size:18px;color:#fff;">●</span>
+                        <span class="dot3" style="font-size:18px;color:#fff;">●</span>
                     </span>
                 </button>
             </form>

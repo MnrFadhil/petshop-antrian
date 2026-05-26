@@ -3,7 +3,7 @@
 namespace App\Livewire;
 
 use App\Mail\QueueConfirmation;
-use App\Mail\QueueEmpty;
+use App\Mail\QueueYourTurn;
 use App\Models\Queue;
 use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
@@ -43,12 +43,11 @@ class DaftarAntrian extends Component
         $this->validate();
 
         $waitingCount = Queue::getWaitingCount();
-        $serving = Queue::getActiveQueue();
-
-        $queueNumber = Queue::generateQueueNumber();
+        $serving      = Queue::getActiveQueue();
+        $isEmpty      = ($waitingCount === 0 && $serving === null);
 
         $queue = Queue::create([
-            'queue_number' => $queueNumber,
+            'queue_number' => Queue::generateQueueNumber(),
             'owner_name'   => $this->owner_name,
             'email'        => $this->email,
             'pet_type'     => $this->pet_type,
@@ -57,11 +56,10 @@ class DaftarAntrian extends Component
             'status'       => 'waiting',
         ]);
 
-        $isEmpty = ($waitingCount === 0 && $serving === null);
-
         try {
             if ($isEmpty) {
-                Mail::to($this->email)->send(new QueueEmpty($queue));
+                // Langsung jadi #1, kirim QueueYourTurn saja (1 email, efisien)
+                Mail::to($this->email)->send(new QueueYourTurn($queue));
             } else {
                 Mail::to($this->email)->send(new QueueConfirmation($queue, $waitingCount + ($serving ? 1 : 0)));
             }
@@ -69,9 +67,9 @@ class DaftarAntrian extends Component
             // Email failure should not block queue registration
         }
 
-        $this->queue_number = $queueNumber;
+        $this->queue_number   = $queue->queue_number;
         $this->is_empty_queue = $isEmpty;
-        $this->submitted = true;
+        $this->submitted      = true;
     }
 
     public function render()

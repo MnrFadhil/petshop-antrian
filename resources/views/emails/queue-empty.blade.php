@@ -30,6 +30,12 @@
 
             <p style="color:#888; font-size:13px;">Nomor antrianmu: <strong>{{ $queue->queue_number }}</strong></p>
             <p style="color:#888; font-size:13px;">Layanan: <strong>{{ $queue->service_label }}</strong></p>
+
+            <div style="background:#fff7ed; border:2px solid #f97316; border-radius:10px; padding:16px 20px; margin:20px 0; text-align:left;">
+                <p style="margin:0; color:#9a3412; font-size:14px; line-height:1.6;">
+                    ⚠️ <strong>Perhatian:</strong> Jika Anda tidak hadir di toko dalam waktu <strong>2 jam</strong> sejak email ini dikirim, antrian Anda akan <strong>hangus secara otomatis</strong> dan Anda perlu mendaftar antri kembali.
+                </p>
+            </div>
         </div>
         <div class="footer">
             PetCare Queue &bull; {{ config('app.url') }}

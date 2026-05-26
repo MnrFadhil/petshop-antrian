@@ -6,13 +6,15 @@ use App\Models\Queue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
-use Illuminate\Queue\SerializesModels;
 
 class QueueEmpty extends Mailable
 {
-    use SerializesModels;
+    private Queue $queueModel;
 
-    public function __construct(public Queue $queue) {}
+    public function __construct(Queue $queue)
+    {
+        $this->queueModel = $queue;
+    }
 
     public function envelope(): Envelope
     {
@@ -25,6 +27,7 @@ class QueueEmpty extends Mailable
     {
         return new Content(
             view: 'emails.queue-empty',
+            with: ['queue' => $this->queueModel],
         );
     }
 

@@ -21,16 +21,16 @@
         </div>
         <div class="body">
             <p style="color:#555; font-size:15px;">Halo <strong>{{ $queue->owner_name }}</strong>!</p>
-            <p style="color:#666; font-size:14px;">Giliranmu <strong>hampir tiba</strong>! Nomor yang sedang dilayani sekarang adalah 1 nomor sebelum kamu.</p>
+            <p style="color:#666; font-size:14px; line-height:1.7;">Antrian kamu tinggal <strong>1 nomor lagi</strong>.<br>Silakan segera menuju ke toko — <strong>admin sudah menunggu kamu</strong>! 🙏</p>
 
             <div class="alert-big">
                 <p>Nomor antrianmu</p>
                 <span class="queue-number">{{ $queue->queue_number }}</span>
-                <p>Segera datang ke lokasi kami sekarang! 🏃</p>
+                <p>Langsung datang ke toko sekarang! 🏃</p>
             </div>
 
             <p style="color:#888; font-size:13px;">Layanan: <strong>{{ $queue->service_label }}</strong></p>
-            <p style="color:#888; font-size:13px;">Jika kamu tidak hadir, nomormu akan di-skip oleh admin.</p>
+            <p style="color:#888; font-size:13px;">⚠️ Jika kamu tidak hadir, nomormu akan di-skip oleh admin.</p>
         </div>
         <div class="footer">
             PetCare Queue &bull; {{ config('app.url') }}
