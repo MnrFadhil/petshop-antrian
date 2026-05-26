@@ -24,7 +24,7 @@ class Queue extends Model
     public static function generateQueueNumber(): string
     {
         $prefix = 'A';
-        $latest = self::whereDate('created_at', today())
+        $latest = self::whereBetween('created_at', [today()->startOfDay(), today()->endOfDay()])
             ->orderByDesc('queue_number')
             ->value('queue_number');
 
