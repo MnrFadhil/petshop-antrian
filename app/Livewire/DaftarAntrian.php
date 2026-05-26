@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Mail\QueueConfirmation;
 use App\Mail\QueueYourTurn;
 use App\Models\Queue;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 
@@ -42,19 +43,28 @@ class DaftarAntrian extends Component
     {
         $this->validate();
 
-        $waitingCount = Queue::getWaitingCount();
-        $serving      = Queue::getActiveQueue();
-        $isEmpty      = ($waitingCount === 0 && $serving === null);
+        [$queue, $isEmpty] = DB::transaction(function () {
+            // Advisory lock agar tidak ada race condition saat generate nomor
+            DB::select("SELECT GET_LOCK('queue_register', 5)");
 
-        $queue = Queue::create([
-            'queue_number' => Queue::generateQueueNumber(),
-            'owner_name'   => $this->owner_name,
-            'email'        => $this->email,
-            'pet_type'     => $this->pet_type,
-            'notes'        => $this->notes,
-            'service'      => $this->service,
-            'status'       => 'waiting',
-        ]);
+            $waitingCount = Queue::getWaitingCount();
+            $serving      = Queue::getActiveQueue();
+            $isEmpty      = ($waitingCount === 0 && $serving === null);
+
+            $queue = Queue::create([
+                'queue_number' => Queue::generateQueueNumber(),
+                'owner_name'   => $this->owner_name,
+                'email'        => $this->email,
+                'pet_type'     => $this->pet_type,
+                'notes'        => $this->notes,
+                'service'      => $this->service,
+                'status'       => 'waiting',
+            ]);
+
+            DB::select("SELECT RELEASE_LOCK('queue_register')");
+
+            return [$queue, $isEmpty];
+        });
 
         try {
             if ($isEmpty) {
