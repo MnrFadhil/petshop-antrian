@@ -8,6 +8,7 @@ class Queue extends Model
 {
     protected $fillable = [
         'queue_number',
+        'queue_date',
         'owner_name',
         'email',
         'pet_type',
@@ -23,13 +24,12 @@ class Queue extends Model
 
     public static function generateQueueNumber(): string
     {
-        $prefix = 'A';
-        $latest = self::whereBetween('created_at', [today()->startOfDay(), today()->endOfDay()])
+        $latest = self::where('queue_date', today()->toDateString())
             ->orderByDesc('queue_number')
             ->value('queue_number');
 
         $next = $latest ? (int) substr($latest, 1) + 1 : 1;
-        return $prefix . str_pad($next, 3, '0', STR_PAD_LEFT);
+        return 'A' . str_pad($next, 3, '0', STR_PAD_LEFT);
     }
 
     public static function getActiveQueue()

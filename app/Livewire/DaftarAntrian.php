@@ -53,6 +53,7 @@ class DaftarAntrian extends Component
 
             $queue = Queue::create([
                 'queue_number' => Queue::generateQueueNumber(),
+                'queue_date'   => today()->toDateString(),
                 'owner_name'   => $this->owner_name,
                 'email'        => $this->email,
                 'pet_type'     => $this->pet_type,
